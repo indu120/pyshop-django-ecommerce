@@ -229,7 +229,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Authors
 
-- **Your Name** - *Initial work* - [YourGitHub](https://github.com/yourusername)
+- **INDULEKHA** - *Initial work* - [GitHub](https://github.com/indu120)
 
 ## 🙏 Acknowledgments
 
@@ -262,4 +262,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Made with ❤️ using Django and Bootstrap**
 
-For support or questions, please open an issue or contact [your-email@example.com](mailto:your-email@example.com)
+For support or questions, please open an issue or contact [indubethur@gmail.com](mailto:indubethur@gmail.com)
