@@ -1,0 +1,117 @@
+{% extends 'products/base.html' %}
+{% load static %}
+
+{% block title %}Search Results{% if query %} for "{{ query }}"{% endif %} - PyShop{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Search Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>Search Results</h2>
+            {% if query %}
+                <p class="text-muted">You searched for: <strong>"{{ query }}"</strong></p>
+                <p class="text-muted">{{ products|length }} product{{ products|length|pluralize }} found</p>
+            {% else %}
+                <p class="text-muted">Please enter a search term</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if products %}
+    <div class="row g-4">
+        {% for product in products %}
+        <div class="col-lg-3 col-md-6">
+            <div class="card product-card h-100">
+                <div class="position-relative overflow-hidden">
+                    <img src="{{ product.get_image_url }}" class="card-img-top product-image" alt="{{ product.name }}">
+                    {% if product.get_discount_percentage %}
+                    <div class="discount-badge">
+                        -{{ product.get_discount_percentage }}%
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-body product-card-body d-flex flex-column">
+                    <h5 class="card-title product-title">{{ product.name }}</h5>
+                    <p class="card-text text-muted small flex-grow-1">{{ product.short_description|truncatewords:15 }}</p>
+                    
+                    <div class="rating mb-2">
+                        <div class="stars">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= product.rating %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <small class="text-muted">({{ product.reviews.count }})</small>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <span class="product-price">${{ product.price }}</span>
+                            {% if product.old_price %}
+                            <span class="product-old-price">${{ product.old_price }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="stock-status {% if product.is_in_stock %}in-stock{% else %}out-of-stock{% endif %}">
+                            {% if product.is_in_stock %}
+                                <i class="fas fa-check-circle"></i> In Stock
+                            {% else %}
+                                <i class="fas fa-times-circle"></i> Out of Stock
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="{{ product.get_absolute_url }}" class="btn btn-outline-primary">
+                            <i class="fas fa-eye me-1"></i>View Details
+                        </a>
+                        {% if product.is_in_stock %}
+                        <form method="POST" action="{% url 'products:add_to_cart' product.id %}" class="add-to-cart-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-cart-plus me-1"></i>Add to Cart
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% elif query %}
+    <div class="text-center py-5">
+        <div class="mb-4">
+            <i class="fas fa-search fa-5x text-muted"></i>
+        </div>
+        <h3 class="text-muted mb-3">No products found</h3>
+        <p class="text-muted mb-4">Sorry, no products match your search criteria.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'products:product_list' %}" class="btn btn-primary">
+                <i class="fas fa-shopping-bag me-2"></i>Browse All Products
+            </a>
+            <a href="{% url 'products:index' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-home me-2"></i>Go Home
+            </a>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="text-center py-5">
+        <div class="mb-4">
+            <i class="fas fa-search fa-5x text-muted"></i>
+        </div>
+        <h3 class="text-muted mb-3">Enter a search term</h3>
+        <p class="text-muted mb-4">Use the search bar above to find products.</p>
+        <a href="{% url 'products:product_list' %}" class="btn btn-primary">
+            <i class="fas fa-shopping-bag me-2"></i>Browse All Products
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
